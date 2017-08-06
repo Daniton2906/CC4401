@@ -1,7 +1,11 @@
 {% include 'partials/header.html' %}
     <ul>
         {% for todo in todos %}
-            <li><a href="/todos/details/{{ todo.id }}">{{ todo.title }}</a>: {{ todo.text }}</li>
+            | <a href="/tarea0/setUpTodo/{{ todo.id }}">Subir</a>
+            | <a href="/tarea0/setDownTodo/{{ todo.id }}">Bajar</a>
+            | <a href="/tarea0/removeTodo/{{ todo.id }}">Borrar</a>
+            | {{ todo.task }}
+            <br>
         {% endfor %}
     </ul>
 {% include 'partials/footer.html' %}

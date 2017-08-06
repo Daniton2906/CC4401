@@ -5,9 +5,9 @@ from datetime import datetime
 
 
 class Todo(models.Model):
-    title= models.CharField(max_length=200)
-    text= models.TextField()
+    priority = models.PositiveIntegerField(default=0)
+    task = models.TextField(default='')
     created_at = models.DateTimeField(default=datetime.now, blank=True)
 
     def __str__(self):
-        return self.title
+        return self.task
