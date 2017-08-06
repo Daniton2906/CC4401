@@ -2,13 +2,14 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    {% load static %}
-    <link rel="stylesheet" href="{% static 'css/style.css' %}">
-    <title>Hello from {{ name }}</title>
+    <title>Hello from {{ name }} asd</title>
 </head>
 <body>
     <header>
         <h1>TodoList</h1>
-        <a href="/todos/add"> Add Todo </a>
+        <form action="{% url 'add' %}" method="post">
+            {% csrf_token %}
+            <input  name="task" placeholder="Nueva Tarea"/> <input type="submit" value="Agregar"/>
+        </form>
         <hr>
     </header>

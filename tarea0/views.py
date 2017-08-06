@@ -8,12 +8,11 @@ from .models import Todo
 
 
 def index(request):
-    todos = Todo.objects.all()[:10]
+    todos = Todo.objects.order_by('priority')
     context = {
         'name': 'Dani',
         'todos': todos
     }
-    #return HttpResponse('Hello World')
     return render(request, 'index.html', context)
 
 
@@ -27,12 +26,51 @@ def details(request, id):
 
 def add(request):
     if request.method == 'POST':
-        title = request.POST['title']
-        text = request.POST['text']
-
-        todo = Todo(title=title, text=text)
+        task = request.POST['task']
+        todo = Todo(priority=0, task=task)
         todo.save()
-
-        return redirect('/todos')
+        new_id = todo.id
+        todos = Todo.objects.exclude(id=new_id)
+        for todo in todos:
+            todo.priority += 1
+            todo.save()
+        return redirect('/')
     else:
-        return render(request, 'add.html')
+        return render(request, 'index.html')
+
+
+def removeTodo(request, id):
+    old_todo = Todo.objects.get(id=id)
+    old_priority = old_todo.priority
+    todos = Todo.objects.filter(priority__gt=old_priority)
+    for todo in todos:
+        todo.priority -= 1
+        todo.save()
+    old_todo.delete()
+    return redirect('/')
+
+
+def setUpTodo(request, id):
+    going_up_todo = Todo.objects.get(id=id)
+    if going_up_todo.priority > 0:
+        going_down_todo = Todo.objects.get(priority=going_up_todo.priority - 1)
+
+        going_up_todo.priority -= 1
+        going_down_todo.priority += 1
+        going_up_todo.save()
+        going_down_todo.save()
+
+    return redirect('/')
+
+
+def setDownTodo(request, id):
+    going_down_todo = Todo.objects.get(id=id)
+    if going_down_todo.priority < Todo.objects.count() - 1:
+        going_up_todo = Todo.objects.get(priority=going_down_todo.priority + 1)
+
+        going_up_todo.priority -= 1
+        going_down_todo.priority += 1
+        going_up_todo.save()
+        going_down_todo.save()
+
+    return redirect('/')
